@@ -1,47 +1,160 @@
-import './App.css';
+import Highcharts from 'highcharts'
 
-import { useState } from 'react';
+import { LineChart } from '@/components/LineChart'
+import { rawData } from '@/data'
 
-import logo from './logo.svg';
+const xCategories = [...new Set(rawData.map((value) => value.date))].sort()
 
-function App() {
-  const [count, setCount] = useState(0);
+const davidPS = rawData
+  .filter((value) => value.name === 'Brian')
+  .map((value) => parseInt(value.pitching_speed))
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
-  );
+const davidControl = rawData
+  .filter((value) => value.name === 'Brian')
+  .map((value) => parseInt(value.control))
+
+const davidStamina = rawData
+  .filter((value) => value.name === 'Brian')
+  .map((value) => parseInt(value.stamina))
+
+console.log({ xCategories, davidPS, davidControl, davidStamina })
+
+const options: Highcharts.Options = {
+  chart: {
+    zoomType: 'xy',
+  },
+  title: {
+    text: 'パワプロ2022 投手成長グラフ',
+  },
+  subtitle: {
+    text: '栄冠ナイン 3年縛り',
+  },
+  xAxis: [
+    {
+      categories: xCategories,
+      crosshair: true,
+    },
+  ],
+  yAxis: [
+    {
+      // Primary yAxis
+      title: {
+        text: '球速',
+        // style: {
+        //   color: Highcharts.getOptions().colors[2],
+        // },
+      },
+      labels: {
+        format: '{value} km/s',
+        // style: {
+        //   color: Highcharts.getOptions().colors[2],
+        // },
+      },
+      min: 80,
+      max: 175,
+    },
+    {
+      // Secondary yAxis
+      gridLineWidth: 0,
+      title: {
+        text: 'コントロール / スタミナ',
+        // style: {
+        //   color: Highcharts.getOptions().colors[0],
+        // },
+      },
+      labels: {
+        // style: {
+        //   color: Highcharts.getOptions().colors[0],
+        // },
+      },
+      opposite: true,
+      min: 0,
+      max: 100,
+    },
+  ],
+  tooltip: {
+    shared: true,
+  },
+  legend: {
+    layout: 'vertical',
+    align: 'left',
+    x: 80,
+    verticalAlign: 'top',
+    y: 55,
+    floating: true,
+    backgroundColor:
+      Highcharts.defaultOptions.legend.backgroundColor || 'rgba(255,255,255,0.25)',
+  },
+  series: [
+    {
+      name: '球速',
+      type: 'line',
+      data: davidPS,
+      tooltip: {
+        valueSuffix: ' km/s',
+      },
+    },
+    {
+      name: 'コントロール',
+      type: 'line',
+      data: davidControl,
+      dashStyle: 'ShortDot',
+      yAxis: 1,
+    },
+    {
+      name: 'スタミナ',
+      type: 'line',
+      data: davidStamina,
+      dashStyle: 'LongDash',
+      yAxis: 1,
+    },
+  ],
+  responsive: {
+    rules: [
+      {
+        condition: {
+          maxWidth: 500,
+        },
+        chartOptions: {
+          legend: {
+            floating: false,
+            layout: 'horizontal',
+            align: 'center',
+            verticalAlign: 'bottom',
+            x: 0,
+            y: 0,
+          },
+          yAxis: [
+            {
+              labels: {
+                align: 'right',
+                x: 0,
+                y: -6,
+              },
+              showLastLabel: false,
+            },
+            {
+              labels: {
+                align: 'left',
+                x: 0,
+                y: -6,
+              },
+              showLastLabel: false,
+            },
+            {
+              visible: false,
+            },
+          ],
+        },
+      },
+    ],
+  },
 }
 
-export default App;
+export const App = () => {
+  return (
+    <div>
+      <LineChart options={options} />
+    </div>
+  )
+}
