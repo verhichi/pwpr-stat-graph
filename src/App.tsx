@@ -1,27 +1,86 @@
 import Highcharts from 'highcharts'
+import { useState } from 'react'
 
 import { LineChart } from '@/components/LineChart'
 import { rawData } from '@/data'
 
-const xCategories = [...new Set(rawData.map((value) => value.date))].sort()
+const PLAYER_NAMES = ['Arin', 'Brian', 'Carl', 'David', 'Edmond']
 
-const davidPS = rawData
-  .filter((value) => value.name === 'Brian')
-  .map((value) => parseInt(value.pitching_speed))
+const DATES = [
+  '2022/05',
+  '2022/06',
+  '2022/07',
+  '2022/08',
+  '2022/09',
+  '2022/10',
+  '2022/11',
+  '2022/12',
+  '2023/01',
+  '2023/02',
+  '2023/03',
+  '2023/04',
+  '2023/05',
+  '2023/06',
+  '2023/07',
+  '2023/08',
+  '2023/09',
+  '2023/10',
+  '2023/11',
+  '2023/12',
+  '2024/01',
+  '2024/02',
+  '2024/03',
+  '2024/04',
+  '2024/05',
+  '2024/06',
+  '2024/07',
+]
 
-const davidControl = rawData
-  .filter((value) => value.name === 'Brian')
-  .map((value) => parseInt(value.control))
+const series = PLAYER_NAMES.reduce((obj, name, idx) => {
+  const pitchingSpeed = {
+    name: '球速',
+    type: 'line',
+    data: [] as (number | null)[],
+    tooltip: {
+      valueSuffix: ' km/s',
+    },
+    color: Highcharts.getOptions().colors[idx],
+  }
+  const control = {
+    name: `コントロール`,
+    type: 'line',
+    data: [] as (number | null)[],
+    dashStyle: 'ShortDot',
+    yAxis: 1,
+    color: Highcharts.getOptions().colors[idx],
+  }
+  const stamina = {
+    name: `スタミナ`,
+    type: 'line',
+    data: [] as (number | null)[],
+    dashStyle: 'LongDash',
+    yAxis: 1,
+    color: Highcharts.getOptions().colors[idx],
+  }
+  const nameDateMatch = DATES.map(
+    (date) => rawData.find((data) => data.date === date && data.name === name) || null,
+  )
 
-const davidStamina = rawData
-  .filter((value) => value.name === 'Brian')
-  .map((value) => parseInt(value.stamina))
+  nameDateMatch.forEach((data) => {
+    pitchingSpeed.data = [
+      ...pitchingSpeed.data,
+      parseInt(data?.pitching_speed || '') || null,
+    ]
+    control.data = [...control.data, parseInt(data?.control || '') || null]
+    stamina.data = [...stamina.data, parseInt(data?.stamina || '') || null]
+  })
+  return { ...obj, [name]: [pitchingSpeed, control, stamina] }
+}, {})
 
-console.log({ xCategories, davidPS, davidControl, davidStamina })
-
-const options: Highcharts.Options = {
+const getOptions = (value: string): Highcharts.Options => ({
   chart: {
     zoomType: 'xy',
+    alignTicks: false,
   },
   title: {
     text: 'パワプロ2022 投手成長グラフ',
@@ -31,7 +90,7 @@ const options: Highcharts.Options = {
   },
   xAxis: [
     {
-      categories: xCategories,
+      categories: DATES,
       crosshair: true,
     },
   ],
@@ -40,121 +99,47 @@ const options: Highcharts.Options = {
       // Primary yAxis
       title: {
         text: '球速',
-        // style: {
-        //   color: Highcharts.getOptions().colors[2],
-        // },
       },
       labels: {
         format: '{value} km/s',
-        // style: {
-        //   color: Highcharts.getOptions().colors[2],
-        // },
       },
       min: 80,
-      max: 175,
+      max: 180,
+      tickInterval: 20,
     },
     {
       // Secondary yAxis
-      gridLineWidth: 0,
+      // gridLineWidth: 0,
       title: {
         text: 'コントロール / スタミナ',
-        // style: {
-        //   color: Highcharts.getOptions().colors[0],
-        // },
-      },
-      labels: {
-        // style: {
-        //   color: Highcharts.getOptions().colors[0],
-        // },
       },
       opposite: true,
       min: 0,
       max: 100,
+      tickInterval: 20,
     },
   ],
   tooltip: {
     shared: true,
   },
-  legend: {
-    layout: 'vertical',
-    align: 'left',
-    x: 80,
-    verticalAlign: 'top',
-    y: 55,
-    floating: true,
-    backgroundColor:
-      Highcharts.defaultOptions.legend.backgroundColor || 'rgba(255,255,255,0.25)',
-  },
-  series: [
-    {
-      name: '球速',
-      type: 'line',
-      data: davidPS,
-      tooltip: {
-        valueSuffix: ' km/s',
-      },
-    },
-    {
-      name: 'コントロール',
-      type: 'line',
-      data: davidControl,
-      dashStyle: 'ShortDot',
-      yAxis: 1,
-    },
-    {
-      name: 'スタミナ',
-      type: 'line',
-      data: davidStamina,
-      dashStyle: 'LongDash',
-      yAxis: 1,
-    },
-  ],
-  responsive: {
-    rules: [
-      {
-        condition: {
-          maxWidth: 500,
-        },
-        chartOptions: {
-          legend: {
-            floating: false,
-            layout: 'horizontal',
-            align: 'center',
-            verticalAlign: 'bottom',
-            x: 0,
-            y: 0,
-          },
-          yAxis: [
-            {
-              labels: {
-                align: 'right',
-                x: 0,
-                y: -6,
-              },
-              showLastLabel: false,
-            },
-            {
-              labels: {
-                align: 'left',
-                x: 0,
-                y: -6,
-              },
-              showLastLabel: false,
-            },
-            {
-              visible: false,
-            },
-          ],
-        },
-      },
-    ],
-  },
-}
+  series: series[value],
+})
 
 export const App = () => {
+  const [name, setName] = useState(PLAYER_NAMES[0])
+
+  const handleChangeName = (e) => setName(e.target.value)
+
   return (
     <div>
-      <LineChart options={options} />
+      <select value={name} onChange={handleChangeName}>
+        {PLAYER_NAMES.map((name) => (
+          <option key={name} value={name}>
+            {name}
+          </option>
+        ))}
+      </select>
+      <LineChart options={getOptions(name)} />
     </div>
   )
 }
