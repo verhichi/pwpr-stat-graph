@@ -8,3 +8,6 @@ start-front:
 
 start-server:
 		cd backend/server && pipenv run start
+
+start-accumulator:
+		cd backend/accumalator && pipenv run start
