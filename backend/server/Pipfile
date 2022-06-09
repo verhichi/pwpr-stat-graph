@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+
+[dev-packages]
+python-dotenv = "*"
+pep8 = "*"
+autopep8 = "*"
+
+[requires]
+python_version = "3.10"
+
+[scripts]
+lint = 'autopep8 --in-place -r --aggressive src'
+start = 'py ./src/main.py'
