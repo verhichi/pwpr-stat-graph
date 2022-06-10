@@ -25,8 +25,14 @@ dist-ssr
 *.sw?
 
 .env
-*.png
-*.jpg
-*.mp4
-*.csv
-*.log
+/backend/**/*.png
+/backend/**/*.jpg
+/backend/**/*.mp4
+/backend/**/*.csv
+/backend/**/*.log
+
+/frontend/**/*.png
+/frontend/**/*.jpg
+/frontend/**/*.mp4
+/frontend/**/*.csv
+/frontend/**/*.log

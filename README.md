@@ -6,9 +6,20 @@ My personal project to collect game data from video stream and plot them in a gr
 
 - Game: [e-baseball Pawafuru PuroYakyuu (eBASEBALL パワフルプロ野球 2022)](https://www.konami.com/pawa/2022/)
   - a Japanese Baseball game
-  - only for specific mode: Eikan-Nine(栄冠ナイン)
+  - tailored for a specific game mode: Eikan-Nine(栄冠ナイン)
+    - currently only supports Pitchers
+      - only supports `pitching speed`, `stamina`, `control`
+    - plots the increase/decrease in status of pitchers in course of the game
+    - Currently can only properly read English names
+    - Currently can only read first 5 pitchers
+    - gameplay image(it's an all Japanese game)
+      ![gameplay-screenshot](/.github/readme/images/gameplay.jpg)
 
-TODO: Sample Image of Graph
+### Screenshot
+
+Graph that displays the development of certain statuses within the course of the game.
+
+![app-screenshot](/.github/readme/images/screenshot.png)
 
 ## Developers
 
