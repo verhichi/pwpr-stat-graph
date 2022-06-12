@@ -1,3 +1,7 @@
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Highcharts from 'highcharts'
 import { useEffect, useState } from 'react'
 
@@ -60,20 +64,35 @@ export const App = () => {
     series: series ? series[name] : [],
   }
 
-  const handleChangeName = (e) => setName(e.target.value)
+  const handleChangeName = (event: SelectChangeEvent) => {
+    setName(event.target.value as string)
+  }
 
   return (
     <div>
       {!loading && (
         <>
-          <select value={name} onChange={handleChangeName}>
-            <option>---</option>
-            {names.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
+          <FormControl fullWidth>
+            <InputLabel id="player-name-label">Name</InputLabel>
+            <Select
+              id="player-name"
+              labelId="player-name-label"
+              value={name}
+              onChange={handleChangeName}
+              label="Name"
+              displayEmpty
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {names.map((name) => (
+                <MenuItem key={name} value={name}>
+                  {name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
           <LineChart options={options} />
         </>
       )}
