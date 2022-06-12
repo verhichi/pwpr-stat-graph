@@ -21,9 +21,18 @@ Graph that displays the development of certain statuses within the course of the
 
 ![app-screenshot](/.github/readme/images/screenshot.png)
 
+### The Entire Setup
+
+The diagram below illustrates the entire setup needed to accumulate and plot the data.
+
+![entire-setup](/.github/readme/images/setup.jpg)
+
 ## Developers
 
 ### Prerequisites
+
+This is the environment I used.  
+You can use different hardwares/softwares but I can not guarantee that it will work. This simply describes my environment that I got to work.
 
 - Data Accumulator
 
