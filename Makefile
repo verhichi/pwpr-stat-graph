@@ -10,4 +10,4 @@ start-server:
 		cd backend/server && pipenv run start
 
 start-accumulator:
-		cd backend/accumalator && pipenv run start
+		cd backend/accumulator && pipenv run start
