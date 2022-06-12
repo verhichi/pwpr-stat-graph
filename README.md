@@ -1,5 +1,7 @@
 # PWPR STAT GRAPH
 
+日本語 README: [README.md](README_JP.md)
+
 ## What is this?
 
 My personal project to collect game data from video stream and plot them in a graph.
